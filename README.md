@@ -1,8 +1,3 @@
-[![Travis-CI Build Status](https://travis-ci.org/ctlab/fgsea.svg?branch=master)](https://travis-ci.org/ctlab/fgsea)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/ctlab/fgsea?branch=master&svg=true)](https://ci.appveyor.com/project/ctlab/fgsea)
-[![codecov](https://codecov.io/gh/ctlab/fgsea/branch/master/graph/badge.svg)](https://codecov.io/gh/ctlab/fgsea)
-
-
 # fgsea
 An R-package for fast preranked gene set enrichment analysis (GSEA). The package 
 implements a special algorithm to calculate the empirical enrichment score null distributions simultaneously
@@ -15,7 +10,7 @@ Full vignette can be found here: http://bioconductor.org/packages/devel/bioc/vig
 
 ```{r}
 library(devtools)
-install_github("ctlab/fgsea")
+install_github("auberginekenobi/fgsea")
 ```
 
 
