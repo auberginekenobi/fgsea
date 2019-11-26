@@ -595,8 +595,11 @@ fgseaSimpleImpl <- function(pathwayScores, pathwaysSizes, pathwaysFiltered,
           NES := ES / ifelse(ES > 0, geZeroMean, abs(leZeroMean))]
 
     pvals[, pval := as.numeric(NA)]
-    pvals[!is.na(NES), pval := pmin((1+nLeEs) / (1 + nLeZero),
-                        (1+nGeEs) / (1 + nGeZero))]
+    #pvals[!is.na(NES), pval := pmin((1+nLeEs) / (1 + nLeZero),
+    #                    (1+nGeEs) / (1 + nGeZero))]
+    # Hack total number of permutations as (nLeZero + nGeZero) because I don't know where it is
+    pvals[(ES > 0), pval := nGeEs / (nLeZero + nGeZero)]
+    pvals[(ES < 0), pval := nLeEs / (nLeZero + nGeZero)] 
 
 
     pvals[, padj := as.numeric(NA)]
