@@ -323,7 +323,7 @@ fgseaLabel <- function(pathways, mat, labels, nperm,
     pathwaysFiltered <- pathwaysFiltered[toKeep]
     pathwaysSizes <- pathwaysSizes[toKeep]
 
-    corRanks <- var(tmatSc, labelsSc)[,1]
+    corRanks <- cov(tmatSc, labelsSc, method="kendall")[,1]
     ranksOrder <- order(corRanks, decreasing=TRUE)
     ranksOrderInv <- invPerm(ranksOrder)
     stats <- corRanks[ranksOrder]
@@ -345,7 +345,7 @@ fgseaLabel <- function(pathways, mat, labels, nperm,
         nperm1 <- permPerProc[i]
 
         labelPerms <- do.call(cbind, replicate(nperm1, sample(labelsSc), simplify = FALSE))
-        randCorRanks <- var(tmatSc, labelPerms)
+        randCorRanks <- cov(tmatSc, labelPerms, method="kendall")
 
         randEsPs <- lapply(seq_len(nperm1), function(i) {
             randCorRanks1 <- randCorRanks[, i]
