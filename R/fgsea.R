@@ -287,7 +287,8 @@ fgseaLabel <- function(pathways, mat, labels, nperm,
                       minSize=1, maxSize=Inf,
                       nproc=0,
                       gseaParam=1,
-                      BPPARAM=NULL) {
+                      BPPARAM=NULL,
+					  nullEsPath=NULL) {
 
     granularity <- 100
     permPerProc <- rep(granularity, floor(nperm / granularity))
@@ -361,6 +362,10 @@ fgseaLabel <- function(pathways, mat, labels, nperm,
         })
 
         randEsPs <- do.call(cbind, randEsPs)
+		
+		if (nullEsPath != NULL){
+			write.table(randEsPs,nullEsPath)
+		}
 
         leEs <- apply(sweep(randEsPs, MARGIN = 1, pathwayScores, `<=`), 1, sum)
         geEs <- apply(sweep(randEsPs, MARGIN = 1, pathwayScores, `>=`), 1, sum)
