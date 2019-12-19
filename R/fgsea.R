@@ -287,8 +287,7 @@ fgseaLabel <- function(pathways, mat, labels, nperm,
                       minSize=1, maxSize=Inf,
                       nproc=0,
                       gseaParam=1,
-                      BPPARAM=NULL,
-					  nullEsPath=NULL) {
+                      BPPARAM=NULL) {
 
     granularity <- 100
     permPerProc <- rep(granularity, floor(nperm / granularity))
@@ -362,10 +361,6 @@ fgseaLabel <- function(pathways, mat, labels, nperm,
         })
 
         randEsPs <- do.call(cbind, randEsPs)
-		
-		if (nullEsPath != NULL){
-			write.table(randEsPs,nullEsPath)
-		}
 
         leEs <- apply(sweep(randEsPs, MARGIN = 1, pathwayScores, `<=`), 1, sum)
         geEs <- apply(sweep(randEsPs, MARGIN = 1, pathwayScores, `>=`), 1, sum)
@@ -373,11 +368,13 @@ fgseaLabel <- function(pathways, mat, labels, nperm,
         geZero <- apply(randEsPs >= 0, 1, sum)
         leZeroSum <- apply(pmin(randEsPs, 0), 1, sum)
         geZeroSum <- apply(pmax(randEsPs, 0), 1, sum)
+        randEs <- apply(randEsPs, 1, list)
 
         data.table(pathway=seq_len(m),
                    leEs=leEs, geEs=geEs,
                    leZero=leZero, geZero=geZero,
-                   leZeroSum=leZeroSum, geZeroSum=geZeroSum
+                   leZeroSum=leZeroSum, geZeroSum=geZeroSum,
+				   randEs=randEs
         )
     }, BPPARAM=BPPARAM)
 
@@ -389,6 +386,7 @@ fgseaLabel <- function(pathways, mat, labels, nperm,
     pathway=padj=pval=ES=NES=geZeroMean=leZeroMean=NULL
     nMoreExtreme=nGeEs=nLeEs=size=NULL
     leadingEdge=NULL
+    randEs=NULL
     .="damn notes"
 
 
@@ -412,10 +410,12 @@ fgseaLabel <- function(pathways, mat, labels, nperm,
     pvals[, nLeEs := NULL]
     pvals[, nGeEs := NULL]
 
+	temp <- counts[,list(nullEs=(unlist(randEs))),by=pathway]
     pvals[, size := pathwaysSizes[pathway]]
     pvals[, pathway := names(pathwaysFiltered)[pathway]]
 
     pvals[, leadingEdge := .(leadingEdges)]
+    pvals$nullEs <- temp[,list(nullEs=(.(nullEs))),by=pathway]$nullEs
 
 
     # Makes pvals object printable immediatly
